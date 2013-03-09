@@ -220,8 +220,7 @@
             <p class="separate"><span class="code">pages/</span> is where all web pages written using Crumple will be served from. Sub-directories are allowed and will still serve pages in the expected manner (appending the sub-directory name to the end of the web address and then the file name requested that existed in the sub-directory). There is no need for a <span class="code">__init__.py</span> file in any of the directories, as the files should not be imported.</p>
             <p class="separate"><span class="code">extensions/</span> is used to store all extensions that the user will create. Sub-directories are allowed, and an <span class="code">__init__.py</span> file should be included in each, as well as in the root of this directory.</p>
             <p class="separate"><span class="code">templates/</span> will contain all of the user-created templates. Sub-directories are allowed.</p>
-            <p class="separate"><span class="code">database/</span> is an optional directory that can be deleted by the user if it is not needed. It is mainly for the storage of SQLite databases and other database related files that need write-access.</p>
-            <p class="highlight">Note that other user-defined directories may be created, but for most simple applications, only these directories will be needed.</p>
+            <p class="highlight">Note that user-defined directories may be created, but for most simple applications, only these directories will be needed.</p>
 
             <!--=========SELinux Policies=========-->
             <h3 id="selinuxPolicies">SELinux Policies</h3>
