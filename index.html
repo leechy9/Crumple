@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Crumple Documentation</title>
+        <style type="text/css">
+            * {
+                margin:0px;
+                padding:0px;
+            }
+            html {
+                font-family:"Trebuchet MS", Helvetica, sans-serif;
+                font-size:14px;
+                background-color:#333333;
+                color: #000000;
+                line-height: 140%;
+            }
+            body {
+                margin-left:auto;
+                margin-right:auto;
+                width:900px;
+                height:100%;
+                padding:12px;
+                background-color:#F8F8F8;
+            }
+            div {
+                margin:8px;
+                padding:8px;
+            }
+            p {
+                margin-top:14px;
+                margin-bottom:14px;
+                margin-left:10px;
+            }
+            h1, h2, h3, h4, h5, h6, h7, h8 {
+                color:#D4B400;
+                margin-top:12px;
+                margin-bottom:12px;
+            }
+            h1 {
+                font-size:26px;
+            }
+            h2 {
+                font-size:22px;
+                border-bottom: solid #888888 1px;
+                margin-bottom:24px;
+            }
+            h3 {
+                font-size:18px;
+                margin-top:34px;
+            }
+            a {
+                color:#EE1177;
+                text-decoration:none;
+            }
+            a:hover {
+                text-decoration:underline;
+            }
+            #footer {
+                text-align:right;
+                margin-top:46px;
+                border-top:dashed #888888 2px;
+                height:30px;
+            }
+            #navigation div {
+                float:left;
+            }
+            #navigation>div>a {
+                font-size:24px;
+            }
+            #navigation div ul {
+                list-style-type:none;
+                margin-top:6px;
+                margin-right:16px;
+            }
+            #navigation div ul li{
+                margin:4px;
+            }
+            .title {
+                text-align:center;
+            }
+            .code {
+                font-family:"Lucida Console", Monaco, monospace;
+                background-color: #DFDFDF;
+                color: #111111;
+                margin-left:6px;
+                margin-right:6px;
+                padding:2px;
+            }
+            .codeBlock {
+                font-family:"Lucida Console", Monaco, monospace;
+                border:solid #888888 1px;
+                background-color: #DFDFDF;
+                color: #333333;
+                line-height:150%;
+                margin-left:18px;
+            }
+            .fileName {
+                font-family:"Lucida Console", Monaco, monospace;
+                margin-top:12px;
+                margin-left:18px;
+            }
+            .highlight {
+                color:#EE1177;
+            }
+            .separate {
+                margin-top:18px;
+                margin-bottom:18px;
+                padding:4px;
+                border-top:dotted #888888 1px;
+            }
+            .clear {
+                clear:both;
+            }
+            .spaceLeft {
+                margin-left:32px;
+            }
+        </style>
+    </head>
+    <body>
+
+        <h1 class="title">Crumple Documentation</h1>
+
+        <!--=========NAVIGATION=========-->
+        <div id="navigation">
+            <h2 class="clear">Navigation</h2>
+            <div>
+                <a href="#setup">Setup</a>
+                <ul>
+                    <li><a href="#configureApache">Configuring Apache</a></li>
+                    <li><a href="#overview">Directory Overview</a></li>
+                    <li><a href="#selinuxPolicies">SELinux Policies</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="#templates">Templates</a>
+                <ul>
+                    <li><a href="#templateTag">Template Tags</a></li>
+                    <li><a href="#insertTag">Insert Tags</a></li>
+                    <li><a href="#extensionTag">Extension Tags</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="#extensions">Extensions</a>
+                <ul>
+                    <li><a href="#basicExtensions">Basic Extensions</a></li>
+                    <li><a href="#advancedExtensions">Advanced Extensions</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="#pages">Pages</a>
+                <ul>
+                    <li><a href="#basicPages">Basic Pages</a></li>
+                    <li><a href="#enviObjects">Envi Objects</a></li>
+                    <li><a href="#userInputs">User Inputs</a></li>
+                </ul>
+            </div>
+            <div>
+                <a href="#usefulTips">Useful Tips</a>
+                <ul>
+                    <li><a href="#contentTypes">Content Types</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!--=========INTRO=========-->
+        <div id="introduction" class="clear">
+            <h2>Introduction</h2>
+            <p>Crumple is a templating engine to help create modular websites. It also has a few utilities for easy handling of GET/POST data and cookies.</p>
+            <p>It is based off of the WSGI specification 333, and is designed to work with Python 2.6.X+, Apache, and mod_wsgi.</p>
+            <p>Crumple has currently only been tested on mod_wsgi, but may work on other WSGI servers such as uWSGI, twisted.web, etc. There are future plans to test Crumple on uWSGI so that the two can interoperate. A simple WSGI server based off of the utilities in the Python standard library is another possiblity that may be added in future updates.</p>
+        </div>
+
+        <!--=========SETUP=========-->
+        <div id="setup">
+            <h2>Setup</h2>
+            <p>To set up Crumple, extract the code from the tarball or zip file that it came in. The contents that were extracted should consist of this documentation along with <span class="code">README</span>, <span class="code">LICENSE</span>, and the <span class="code">crumple</span> directory. This tutorial will only use the <span class="code">crumple</span> directory. If you currently do not have a copy of Crumple, please visit <a href="http://github.com/leechy9/Crumple">github.com</a> for the latest version.</p>
+            <p>To use Crumple, Python version 2.6.X or greater is required. It also makes use of the mod_wsgi module for Apache, as well as Apache itself. Crumple has currently only been tested on mod_wsgi, but may work on other WSGI servers such as uWSGI, twisted.web, etc.</p>
+
+            <!--=========Configuring Apache=========-->
+            <h3 id="configureApache">Configuring Apache</h3>
+            <p>This document assumes that the document root for the web server is set to <span class="code">/srv/http/static</span> and that Apache will use <span class="code">/srv/http</span> for all of its data.</p>
+            <p class="highlight">Please note that the settings listed in this section should be understood before using them. While there are no direct security issues with the configurations that will be given, it is always best to tune them to suit each system's needs.</p>
+            <p>The document root is where all static HTML, CSS, images, Javascript, etc. are usually served from on a web server. To set the document root for Apache, edit the line in <span class="code">httpd.conf</span> starting with <span class="code">DocumentRoot</span> to the desired directory (exclude the trailing slash). Also add/edit the next lines to ensure that Apache can read the directory set in <span class="code">DocumentRoot</span>.</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;Directory &quot;/srv/http/static&quot;&gt; <br />
+                    &ensp;&ensp;Options Indexes FollowSymLinks <br />
+                    &ensp;&ensp;AllowOverride None <br />
+                    &ensp;&ensp;Require all granted <br />
+                    &lt;/Directory&gt; <br />
+                </p>
+            </div>
+            <p>The <span class="code">crumple</span> directory that was extracted in the previous section should now be copied into <span class="code">/srv/http/</span> (this is so that dynamic content is clearly separated from static content).</p>
+            <p>Now that Crumple has been copied into the proper directory, Apache needs to be able to access it. Ensure that the following is inserted into <span class="code">httpd.conf</span> so Apache can access the <span class="code">/srv/http</span> directory and all of its contents.</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;Directory &quot;/srv/http&quot;&gt; <br />
+                    &ensp;&ensp;AllowOverride None <br />
+                    &ensp;&ensp;Require all granted <br />
+                    &lt;/Directory&gt; <br />
+                </p>
+            </div>
+            <p>Now that Apache is able to read from the directories, the following should be inserted at the bottom of <span class="code">httpd.conf</span> (or another appropriate file to configure mod_wsgi).</p>
+            <div class="codeBlock">
+                <p>
+                    WSGIScriptAlias /wsgi/ /srv/http/crumple/pages/ <br />
+                    WSGIPythonPath /srv/http/crumple/
+                </p>
+            </div>
+            <p>The first line tells Apache to treat the directory <span class="code">/srv/http/crumple/pages/</span> as if it were the <span class="code">/wsgi/</span> directory when a Python web page is requested. For example, if a request to the website <span class="code">http://www.example.com/wsgi/page.py</span> was made, Apache would actually serve <span class="code">/srv/http/crumple/pages/page.py</span> instead.</p>
+            <p>The second line tells Python what to treat as the root directory for importing packages; this will be covered more in the next section.</p>
+            <p>Apache should be set as the owner of the directories created or else it will not be able to read from them. To set Apache as the owner run the command <span class="code">chown -R apache /srv/http/</span>. Note that Apache may have a different username from the one specified, due to the differences between various operating systems.</p>
+            
+            <!--=========Overview=========-->
+            <h3 id="overview">Crumple Overview</h3>
+            <p>Inside of the <span class="code">crumple/</span> directory, there are several folders and files. This section will attempt to clarify what each directory is used for and does.</p>
+            <p class="separate"><span class="code">framework/</span> is reserved for Crumple files and no files should ever be changed in this directory with the exception of <span class="code">config.py</span>, which may be edited by the user in a simple text editor. It is highly recommended that this file be configured properly immediately after installation.</p>
+            <p class="separate"><span class="code">libraries/</span> is meant to contain all of the user's personal libraries that are to be used in conjunction with Crumple. To import from a package while creating pages, a simple call to <span class="code">import libraries.desiredPackageName</span> will be all that is required. The file <span class="code">__init__.py</span> should be left in this directory at all times to ensure that all libraries can be imported.</p>
+            <p class="separate"><span class="code">pages/</span> is where all web pages written using Crumple will be served from. Sub-directories are allowed and will still serve pages in the expected manner (appending the sub-directory name to the end of the web address and then the file name requested that existed in the sub-directory). There is no need for a <span class="code">__init__.py</span> file in any of the directories, as the files should not be imported.</p>
+            <p class="separate"><span class="code">extensions/</span> is used to store all extensions that the user will create. Sub-directories are allowed, and an <span class="code">__init__.py</span> file should be included in each, as well as in the root of this directory.</p>
+            <p class="separate"><span class="code">templates/</span> will contain all of the user-created templates. Sub-directories are allowed.</p>
+            <p class="highlight">Note that user-defined directories may be created, but for most simple applications, only these directories will be needed.</p>
+
+            <!--=========SELinux Policies=========-->
+            <h3 id="selinuxPolicies">SELinux Policies</h3>
+            <p>For systems that run SELinux, it may prevent Apache from accessing files if the incorrect contexts are set. To set the correct context on files, run the command <span class="code">chcon -R -t httpd_sys_content_t /srv/http</span> -- this allows Apache to read the files.</p>
+            <p>While the above command allows Apache to read files, it does not allow the writing of files. Since mod_wsgi and Python both try to compile imported <span class="code">.py</span> files into <span class="code">.pyc</span> files, an SELinux denial will occur each time a web page is requested. To fix this, precompile all modules after each edit by executing <span class="code">python -m compileall /srv/http/</span>.</p>
+            <p>If a directory, such as <span class="code">crumple/database</span> needs to have write access, then run the command <span class="code">chcon -R -t httpd_sys_content_rw_t /srv/http/crumple/database</span> to allow Apache to write to the directory without causing a denial.</p>
+        </div>
+
+        <!--=========TEMPLATES=========-->
+        <div id="templates">
+            <h2>Templates</h2>
+            <p>Templates are located in the <span class="code">crumple/templates</span> directory by default.</p>
+
+            <!--=========Template Tag=========-->
+            <h3 id="templateTag">Template Tags</h3>
+            <p>Crumple allows the use of templates to divide a web page into several smaller and reusable parts. This means a change on one part of a template will affect all web pages that use it, instead of having to edit each individual page that needs to be changed.</p>
+            <p>Creating templates is simple. All that is required is the insertion of the <span class="code">&lt;_template /&gt;</span> tag inside of standard html, along with the creation of the template you wish to insert.</p>
+            <p>For example:</p>
+            <span class="fileName">File: template1.tmpl</span>
+            <div class="codeBlock">
+                <p>
+                    &lt;html&gt;<br />
+                    &ensp;&ensp;&lt;head&gt;<br />
+                    &ensp;&ensp;&ensp;&ensp;&lt;title&gt;Test Template&lt;/title&gt;<br />
+                    &ensp;&ensp;&lt;/head&gt;<br />
+                    &ensp;&ensp;&lt;body&gt;<br />
+                    <span class="highlight">&ensp;&ensp;&ensp;&ensp;&lt;_template location=&quot;template2.tmpl&quot; /&gt;</span><br />
+                    &ensp;&ensp;&lt;/body&gt;<br />
+                    &lt;/html&gt;
+                </p>
+            </div>
+            <span class="fileName">File: template2.tmpl</span>
+            <div class="codeBlock">
+                <p>
+                    &lt;div&gt;<br />
+                    &ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                    &lt;/div&gt;
+                </p>
+            </div>
+            <p class="highlight">Note that all templates must start with a single root node. For example, the above template has the div tag acting as the root node.</p>
+            <p>The output after the template is parsed would be:</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;html&gt;<br />
+                    &ensp;&ensp;&lt;head&gt;<br />
+                    &ensp;&ensp;&ensp;&ensp;&lt;title&gt;Test Template&lt;/title&gt;<br />
+                    &ensp;&ensp;&lt;/head&gt;<br />
+                    &ensp;&ensp;&lt;body&gt;<br />
+                    <span class="highlight">
+                        &ensp;&ensp;&ensp;&ensp;&lt;div&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&lt;/div&gt;<br />
+                    </span>
+                    &ensp;&ensp;&lt;/body&gt;<br />
+                    &lt;/html&gt;
+                </p>
+            </div>
+            <p>The location is relative to the location set in <span class="code">framework/config.py</span>. Sub-directories are noted by a forward slash e.g. <span class="code">examples/template1.tmpl</span>. Templates can end with any file extension desired (.xml, .tmpl, etc.).</p>
+            <p>Also take note how the _template tag self-closing in this example. The next section will go into more detail on this.</p>
+
+            <!--=========Insert Tag=========-->
+            <h3 id="insertTag">Insert Tags</h3>
+            <p>The <span class="code">&lt;_insert /&gt;</span> tag can be used to insert the data given on the inside of a _template tag into a specific location in the template.</p>
+            <p> All data put between the _template tags should be put inside of a tag. In other words, there should be no text outside of a tag in the template.</p>
+            <p class="highlight">It is acceptable and useful to have the root node of a document be a _template tag. Crumple was designed to have several nested templates.</p>
+            <p>An example use of the _insert tag:</p>
+            <span class="fileName">File: template1.tmpl</span>
+            <div class="codeBlock">
+                <p>
+                    &lt;html&gt;<br />
+                    &ensp;&ensp;&lt;head&gt;<br />
+                    &ensp;&ensp;&ensp;&ensp;&lt;title&gt;Test Template&lt;/title&gt;<br />
+                    &ensp;&ensp;&lt;/head&gt;<br />
+                    &ensp;&ensp;&lt;body&gt;<br />
+                    <span class="highlight">
+                        &ensp;&ensp;&ensp;&ensp;&lt;_template location=&quot;template2.tmpl&quot;&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Goodbye World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&lt;/_template&gt;<br />
+                    </span>
+                    &ensp;&ensp;&lt;/body&gt;<br />
+                    &lt;/html&gt;
+                </p>
+            </div>
+            <span class="fileName">File: template2.tmpl</span>
+            <div class="codeBlock">
+                <p>
+                    &lt;div&gt;<br />
+                    <span class="highlight">&ensp;&ensp;&lt;_insert /&gt;</span><br />
+                    &lt;/div&gt;
+                </p>
+            </div>
+            <p>The output after the template is parsed would be:</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;html&gt;<br />
+                    &ensp;&ensp;&lt;head&gt;<br />
+                    &ensp;&ensp;&ensp;&ensp;&lt;title&gt;Test Template&lt;/title&gt;<br />
+                    &ensp;&ensp;&lt;/head&gt;<br />
+                    &ensp;&ensp;&lt;body&gt;<br />
+                    <span class="highlight">
+                        &ensp;&ensp;&ensp;&ensp;&lt;div&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Goodbye World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&lt;/div&gt;<br />
+                    </span>
+                    &ensp;&ensp;&lt;/body&gt;<br />
+                    &lt;/html&gt;
+                </p>
+            </div>
+            <p>While, self closing _insert tags is optional, all data on the inside of the tag will be deleted.</p>
+
+            <!--=========Extension Tag=========-->
+            <h3 id="extensionTag">Extension Tags</h3>
+            <p>The <span class="code">&lt;_extension /&gt;</span> tag is meant to be used for dynamic or computed content. There is no inline code inside of templates in Crumple, so use of the _extension tag is required. This helps to separate Python code from HTML.</p>
+            <p>Using an extension is almost the same as using a template, with but one exception -- subdirectories are denoted by <span class="code">.</span> instead of <span class="code">/</span> and the file extensions (<span class="code">.py</span>) are left off.</p>
+            <p>An example of calling an extension from inside a template:</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;html&gt;<br />
+                    &ensp;&ensp;&lt;head&gt;<br />
+                    &ensp;&ensp;&ensp;&ensp;&lt;title&gt;Test Template&lt;/title&gt;<br />
+                    &ensp;&ensp;&lt;/head&gt;<br />
+                    &ensp;&ensp;&lt;body&gt;<br />
+                    <span class="highlight">
+                        &ensp;&ensp;&ensp;&ensp;&lt;_extension location=&quot;examples.extension1&quot;&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Goodbye World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&lt;/_extension&gt;<br />
+                    </span>
+                    &ensp;&ensp;&lt;/body&gt;<br />
+                    &lt;/html&gt;
+                </p>
+            </div>
+            <p>Crumple would automatically import and execute the extension specified, as well as pass all of the children inside of the _extension tag to it.</p>
+            <p>The next section will cover extensions in greater detail.</p>
+        </div>
+
+        <!--=========EXTENSIONS=========-->
+        <div id="extensions">
+            <h2>Extensions</h2>
+            <p>Extensions are located in the <span class="code">crumple/extensions</span> directory by default. Unlike templates, extensions must all end in <span class="code">.py</span> due to the Python interpreter's nature of importing.</p>
+            <p>Crumple makes heavy use of the <span class="code">xml.etree.ElementTree</span> Element, which is included in the Python standard library since version 2.6. If you are unfamiliar with this api, it may be worth visiting <a href="http://docs.python.org/3/library/xml.etree.elementtree.html#element-objects">docs.python.org</a> to look into the Element object and how it works. Note that the version of the api linked may not match the version currently running on your system.</p>
+
+            <!--=========Extension Basics=========-->
+            <h3 id="basicExtensions">Extension Basics</h3>
+            <p>All extensions are simply Python source code and must include one function: <span class="code">get_output(insert=[])</span>. This method is responsible for returning a single Element object as its output. Any of the returned Element's children --added using the <span class="code">SubElement()</span> method-- will be included in the extension's output.</p>
+            <p>The <span class="code">insert=[]</span> parameter is required, as it is the list of Elements that are contained inside the _extension tag (see the <a href="#extensionTag">section on _extension tag</a> for more information).
+            <p>A complete example of an extension:</p>
+            <div class="codeBlock">
+                <p>
+                    import xml.etree.ElementTree as ET <br /><br />
+                    def get_output(insert=[]): <br />
+                    &ensp;&ensp;div = ET.Element(&quot;div&quot;) <br />
+                    &ensp;&ensp;p = ET.SubElement(div, &quot;p&quot;) <br />
+                    &ensp;&ensp;p.text = &quot;Hello World!&quot; <br />
+                    &ensp;&ensp;return div <br />
+                </p>
+            </div>
+            <p>When called, this extension will return an Element that represents the HTML below:</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;div&gt;<br />
+                    &ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                    &lt;/div&gt;
+                </p>
+            </div>
+
+            <!--=========Advanced Extensions=========-->
+            <h3 id="advancedExtensions">Advanced Extensions</h3>
+            <p>It is possible to have extensions that execute and use other extensions, and it is also possible to have an entire page created out of extensions, without the use of templates:</p>
+            <p class="fileName">File: extension.py</p>
+            <div class="codeBlock">
+                <p>
+                    import xml.etree.ElementTree as ET<br />
+                    <br />
+                    import framework.extension as ext<br />
+                    <br />
+                    def get_output(insert=[]): <br />
+                    &ensp;&ensp;div = ET.Element(&quot;div&quot;) <br />
+                    &ensp;&ensp;p = ET.SubElement(div, &quot;p&quot;) <br />
+                    &ensp;&ensp;p.text = &quot;Hello World!&quot; <br />
+                    &ensp;&ensp;# Insert new content into the base_page extension <br />
+                    &ensp;&ensp;insert_elems = [div] <br />
+                    &ensp;&ensp;# Call another extension <br />
+                    &ensp;&ensp;base_page = ext.Extension(&quot;base_page&quot;, insert_elems) <br />
+                    &ensp;&ensp;return base_page.get_output() <br />
+                </p>
+            </div>
+            <p class="fileName">File: base_page.py</p>
+            <div class="codeBlock">
+                <p>
+                    import xml.etree.ElementTree as ET<br />
+                    <br />
+                    def get_output(insert=[]): <br />
+                    &ensp;&ensp;html = ET.Element(&quot;html&quot;) <br />
+                    &ensp;&ensp;head = ET.SubElement(html, &quot;head&quot;) <br />
+                    &ensp;&ensp;title = ET.SubElement(head, &quot;title&quot;) <br />
+                    &ensp;&ensp;title.text = "Example Page" <br />
+                    &ensp;&ensp;body = ET.SubElement(html, &quot;body&quot;) <br />
+                    &ensp;&ensp;body.extend(insert) <br />
+                    &ensp;&ensp;return html <br />
+                </p>
+            </div>
+            <p>The HTML that this would be equivalent to (once the page is generated) is:</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;html&gt;<br />
+                    &ensp;&ensp;&lt;head&gt;<br />
+                    &ensp;&ensp;&ensp;&ensp;&lt;title&gt;Example Page&lt;/title&gt;<br />
+                    &ensp;&ensp;&lt;/head&gt;<br />
+                    &ensp;&ensp;&lt;body&gt;<br />
+                    <span class="highlight">
+                        &ensp;&ensp;&ensp;&ensp;&lt;div&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&lt;p&gt;Hello World!&lt;/p&gt;<br />
+                        &ensp;&ensp;&ensp;&ensp;&lt;/div&gt;<br />
+                    </span>
+                    &ensp;&ensp;&lt;/body&gt;<br />
+                    &lt;/html&gt;
+                </p>
+            </div>
+            <p>The file <span class="code">extension.py</span> would be the only extension called by the user in order to have an entire web page, while allowing <span class="code">base_page.py</span> to be reused for other pages.</p>
+            <p>Executing the initial extension for a page will be covered in the next section.</p>
+        </div>
+
+
+        <!--=========PAGES=========-->
+        <div id="pages">
+            <h2>Pages</h2>
+            <p>All pages should be stored inside of the <span class="code">crumple/pages</span> directory.</p>
+            <p>Pages are the files that will be executed when a web browser tries to access their name. For example, if there is a file named <span class="code">example.py</span> in the <span class="code">crumple/pages</span> directory, and <span class="code">WSGIScriptAlias /wsgi/ /srv/http/crumple/pages/</span> was set inside of the Apache configuration file, then each time a user visited <span class="code">http://www.example.com/wsgi/example.py</span>, <span class="code">example.py</span> would be executed.</p>
+
+            <!--=========Page Basics=========-->
+            <h3 id="basicPages">Basic Pages</h3>
+            <p>Pages are very simple to write. They all must have the <span class="code">application(environ, start_response)</span> method defined (like every other WSGI application).</p>
+            <div class="codeBlock">
+                <p>
+                    import framework.page as fp <br />
+                    import framework.wsgi as wsgi <br />
+                    <br />
+                    def application(environ, start_response): <br />
+                    &ensp;&ensp;extension = &quot;extExamples.extension1&quot; <br />
+                    &ensp;&ensp;envi = wsgi.Envi(environ, start_response, True) <br />
+                    &ensp;&ensp;page = fp.ExtensionPage(envi, extension) <br />
+                    &ensp;&ensp;return page.get_output() <br />
+                </p>
+            </div>
+            <p>The above code would execute the extension named <span class="code">extension1</span> in the <span class="code">extExamples</span> directory with an <span class="code">ExtensionPage</span> and return its output to the webserver to be sent to the user.</p>
+            <p>Here is another example that acomplishes the same goal, but with templates instead of extensions:</p>
+            <div class="codeBlock">
+                <p>
+                    import framework.page as fp <br />
+                    import framework.wsgi as wsgi <br />
+                    <br />
+                    def application(environ, start_response): <br />
+                    &ensp;&ensp;extension = &quot;tmplExamples/template1.tmpl&quot; <br />
+                    &ensp;&ensp;envi = wsgi.Envi(environ, start_response, True) <br />
+                    &ensp;&ensp;page = fp.TemplatePage(envi, extension) <br />
+                    &ensp;&ensp;return page.get_output() <br />
+                </p>
+            </div>
+            <p class="highlight">Note that in both of the examples above, the extensions and templates were imported relative to the location set in <span class="code">framework/config.py</span>.</p>
+
+            <!--=========Envi Objects=========-->
+            <h3 id="enviObjects">Envi Objects</h3>
+            <p>Envi is used as a way to handle the <span class="code">environ</span> and <span class="code">start_response</span> WSGI objects, as well as retrieve user inputs and cookies. It is also responsible for the HTTP response and HTTP headers that are sent out upon the web page's request.</p>
+            <p>When constructing an Envi, providing the final parameter with a <span class="code">False</span> will tell the Envi object to not use the default headers and status code. If set to <span class="code">True</span>, like in the previous section's example, then the default status code of <span class="code">200 OK</span> is used.</p>
+            <div class="codeBlock">
+                <p>
+                    import framework.page as fp <br />
+                    import framework.wsgi as wsgi <br />
+                    <br />
+                    def application(environ, start_response): <br />
+                    &ensp;&ensp;extension = &quot;extension1&quot; <br />
+                    &ensp;&ensp;envi = wsgi.Envi(environ, start_response, False) <br />
+                    &ensp;&ensp;envi.status = &quot;200 OK&quot; <br />
+                    &ensp;&ensp;headers = [(&quot;Content-type&quot;, &quot;text/html&quot;)] <br />
+                    &ensp;&ensp;envi.extend_headers(headers) <br />
+                    &ensp;&ensp;page = fp.ExtensionPage(envi, extension) <br />
+                    &ensp;&ensp;return page.get_output() <br />
+                </p>
+            </div>
+            <p class="highlight">Note that the <span class="code">Content-type</span> and <span class="code">Content-length</span> headers are still automatically set for the user. If one wishes to use a different <span class="code">Content-type</span>, it can be changed in the <span class="code">framework/config.py</span> file.</p>
+
+            <!--=========User Inputs=========-->
+            <h3 id="userInputs">User Inputs</h3>
+            <p>Envi objects also provide the <span class="code">get_input(key)</span> and <span class="code">get_cookie(key)</span> methods to retrieve data sent to the page from the client. Each takes in the string key of the input/cookie to retrieve and returns the value associated with it. If no key exists, then the return value is <span class="code">None</span>.</p>
+            <p>It is also possible to access the Envi object from inside of extensions. To do this, simply <span class="code">import framework.page</span> inside of the extension. To retrieve the Envi that is associated with the current page that is being requested and store it in a temporary variable, write <span class="code">temp_envi = framework.page.envi</span>. Extensions can then access <span class="code">temp_envi</span> as if it were any normal Envi object.</p>
+        </div>
+
+        <!--=========Useful Tips=========-->
+        <div id="usefulTips">
+            <h2>Useful Tips</h2>
+            <h3 id="contentTypes">Content Types</h3>
+            <p>When creating web pages in Crumple, a <span class="code">Content-type</span> must be set in <span class="code">framework/config.py</span>. Depending on whether the content served will be XHTML or HTML, one of the following content types should be chosen:</p>
+            <ul class="spaceLeft">
+                <li><span class="code">application/xhtml+xml</span> for XHTML web pages.</li>
+                <li><span class="code">text/html</span> for HTML web pages.</li>
+            </ul>
+            <p><span class="highlight">If selecting <span class="code">text/html</span> as the <span class="code">Content-type</span>, all HTML <span class="code">&lt;script&gt;&lt;/script&gt;</span> tags should contain content to prevent the parser from self-closing them. This avoids an issue where most browsers do not allow self-closing script tags.</span> There are future plans to change this behavior so that script tags do not automatically close themselves when there is no content in them.</p>
+            <p>Writing <em>both templates and extensions</em> in a way that avoids this issue is simple.</p>
+            <p>A fix for a template:</p>
+            <div class="codeBlock">
+                <p>
+                    &lt;script src=&quot;example.js&quot;&gt;/*A comment prevents self closing tags*/&lt;/script&gt;
+                </p>
+            </div>
+            <p>A fix for an extension:</p>
+            <div class="codeBlock">
+                <p>
+                    script = ET.SubElement(head, &quot;script&quot;) <br />
+                    script.attrib = {&quot;src&quot;:&quot;example.js&quot;} <br />
+                    script.text = &quot;/*A comment prevents self closing tags*/&quot;
+                </p>
+            </div>
+            <p class="highlight">If selecting <span class="code">application/xhtml+xml</span> as the <span class="code">Content-type</span>, then all browsers that support XHTML will correctly parse the self-closing script tags.</p>
+        </div>
+
+        <!--=========FOOTER=========-->
+        <div id="footer">
+            <p>Visit the Crumple project page at <a href="http://github.com/leechy9/Crumple">github.com</a> for the latest version.</p>
+        </div>
+    </body>
+</html>
