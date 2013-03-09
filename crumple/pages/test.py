@@ -1,3 +1,4 @@
+# This is a simple example of a template page.
 import framework.page as fp
 import framework.wsgi as wsgi
 

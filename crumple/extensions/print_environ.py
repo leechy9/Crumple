@@ -1,3 +1,5 @@
+# This is an example of an extension that prints out the WSGI environ object.
+
 import xml.etree.ElementTree as ET
 
 import framework.wsgi

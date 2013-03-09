@@ -1,3 +1,5 @@
+# This is an example of an extension page that displays the WSGI envrion object
+
 import framework.page as fp
 import framework.wsgi as wsgi
 
