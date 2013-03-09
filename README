@@ -1,0 +1,14 @@
+Crumple is a simple WSGI template engine written in Python that allows for the
+creation of modular websites.
+
+It is highly recommended that users read the documentation provided with this 
+software, since it covers setup, configuration, an overview, and examples. In
+addition to the documentation, there are a few example files included in the
+'extensions', 'templates', and 'pages' directories.
+
+Crumple relies on Python (version 2.6 or higher), mod_wsgi, and Apache. While 
+this project has only been tested with mod_wsgi, it should work on other WSGI 
+compliant servers; there are future plans to test Crumple on uWSGI.
+
+This software, its documentation, and the examples given are all released
+under the GNU GPLv3 license.
