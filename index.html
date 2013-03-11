@@ -224,9 +224,11 @@
 
             <!--=========SELinux Policies=========-->
             <h3 id="selinuxPolicies">SELinux Policies</h3>
+            <p>Since mod_wsgi and Python both try to compile imported <span class="code">.py</span> files into <span class="code">.pyc</span> files, an SELinux denial will occur each time a web page is requested. To fix this, precompile all modules after each edit by executing <span class="code">python -m compileall /srv/http/</span>.</p>
+            <p class="highlight">The above command will have to be executed after each edit of a <span class="code">.py</span> file so that Apache does not cause an SELinux denial each time a page is requested.</p>
             <p>For systems that run SELinux, it may prevent Apache from accessing files if the incorrect contexts are set. To set the correct context on files, run the command <span class="code">chcon -R -t httpd_sys_content_t /srv/http</span> -- this allows Apache to read the files.</p>
-            <p>While the above command allows Apache to read files, it does not allow the writing of files. Since mod_wsgi and Python both try to compile imported <span class="code">.py</span> files into <span class="code">.pyc</span> files, an SELinux denial will occur each time a web page is requested. To fix this, precompile all modules after each edit by executing <span class="code">python -m compileall /srv/http/</span>.</p>
             <p>If a directory, such as <span class="code">crumple/database</span> needs to have write access, then run the command <span class="code">chcon -R -t httpd_sys_content_rw_t /srv/http/crumple/database</span> to allow Apache to write to the directory without causing a denial.</p>
+            <p class="highlight">If the read and write command above is set on all of Crumple's directories, then there is no need to pre-compile the files used. Note that this will lower the security by allowing the web server to write to the directories containing code. Even though the likelyhood of this being exploited is very slim, it is not recommended.</p>
         </div>
 
         <!--=========TEMPLATES=========-->
