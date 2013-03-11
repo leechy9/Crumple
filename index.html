@@ -211,6 +211,7 @@
             <p>The first line tells Apache to treat the directory <span class="code">/srv/http/crumple/pages/</span> as if it were the <span class="code">/wsgi/</span> directory when a Python web page is requested. For example, if a request to the website <span class="code">http://www.example.com/wsgi/page.py</span> was made, Apache would actually serve <span class="code">/srv/http/crumple/pages/page.py</span> instead.</p>
             <p>The second line tells Python what to treat as the root directory for importing packages; this will be covered more in the next section.</p>
             <p>Apache should be set as the owner of the directories created or else it will not be able to read from them. To set Apache as the owner run the command <span class="code">chown -R apache /srv/http/</span>. Note that Apache may have a different username from the one specified, due to the differences between various operating systems.</p>
+            <p>If the system is not running SELinux, then start the Apache daemon and direct your browser to <span class="code">http://127.0.0.1/wsgi/test.py</span> to view the test page. If the page displayed correctly, then Crumple is configured properly. For information on the correct SELinux configuration, view the end of this chapter.</p>
             
             <!--=========Overview=========-->
             <h3 id="overview">Crumple Overview</h3>
