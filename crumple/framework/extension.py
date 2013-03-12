@@ -30,7 +30,7 @@ class Extension:
      Required parameters:
        location - String, relative location to import
      Optional parameters:
-       insert - Element, the Element to insert (defaults to None)
+       insert - list(Element), the list of Elements to insert
     """
     def __init__(self, location, insert=[]):
         self._insert = insert
