@@ -38,7 +38,6 @@ class Extension:
         self._extension_loc = cfg.extension_location + '.' + location
         self.module = \
          __import__(self._extension_loc, fromlist=[cfg.extension_location])
-        # Grab the get_output method from the module
 
     """
      Return the output of the Extension as an Element

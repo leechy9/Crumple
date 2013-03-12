@@ -1,4 +1,4 @@
-# This is a simple example of a template page.
+# This page executes the testing suite for Crumple
 import framework.page as fp
 import framework.wsgi as wsgi
 

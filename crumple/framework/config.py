@@ -15,6 +15,8 @@ You should have received a copy of the GNU General Public License
 along with Crumple.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+
+
 """
  Stores variables used throughout the framework.
  Meant to be edited by the user.

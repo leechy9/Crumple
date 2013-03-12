@@ -1,3 +1,4 @@
+# Part of the testing suite. Checks for a user input and outputs it.
 import xml.etree.ElementTree as ET
 
 import framework.page as fp
