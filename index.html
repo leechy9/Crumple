@@ -479,13 +479,17 @@
                     import framework.wsgi as wsgi <br />
                     <br />
                     def application(environ, start_response): <br />
-                    &ensp;&ensp;extension = &quot;tmplExamples/template1.tmpl&quot; <br />
+                    &ensp;&ensp;template = &quot;tmplExamples/template1.tmpl&quot; <br />
                     &ensp;&ensp;envi = wsgi.Envi(environ, start_response, True) <br />
-                    &ensp;&ensp;page = fp.TemplatePage(envi, extension) <br />
+                    &ensp;&ensp;page = fp.TemplatePage(envi, template) <br />
                     &ensp;&ensp;return page.get_output() <br />
                 </p>
             </div>
             <p class="highlight">Note that in both of the examples above, the extensions and templates were imported relative to the location set in <span class="code">framework/config.py</span>.</p>
+            <p>A third optional parameter may be set to override the default doctype for both types of pages. Simply give the document the string value to use as the new doctype. If this is not set, then the pages default to the value located in <span class="code">framework.config</span>.</p>
+            <p>For example:</p>
+            <div class="codeBlock">page = framework.page.TemplatePage(envi, template, &quot;&lt;!DOCTYPE html&gt;&quot;)</div>
+            <p>The above example would override the default doctype with the third parameter given.</p>
 
             <!--=========Envi Objects=========-->
             <h3 id="enviObjects">Envi Objects</h3>
