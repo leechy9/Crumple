@@ -35,12 +35,18 @@ class TemplatePage:
      Create page and send response headers to client
      Required parameters:
        envi - framework.wsgi.envi, the envi object for this page to use
-       location - string, location of the root template
+       location - string, relative location of the root template
+     Optional parameters:
+       doctype - string, the doctype to use for this page. 
+        Defaults to the value set in framework.config.
     """
-    def __init__(self, envi, location):
+    def __init__(self, envi, location, doctype=None):
         _set_envi(envi)
         self.envi = envi
-        self.doctype = cfg.doctype
+        if doctype is None:
+            self.doctype = cfg.doctype
+        else:
+            self.doctype = doctype
         self._root_tmpl_loc = location
         self._generate_content()
         envi.start_response()
@@ -78,12 +84,18 @@ class ExtensionPage:
      Create page and send response headers to client
      Required parameters:
        envi - framework.wsgi.envi, the envi object for this page to use
-       location - string location of the root extension
+       location - string, relative location of the root extension
+     Optional parameters:
+       doctype - string, the doctype to use for this page. 
+        Defaults to the value set in framework.config.
     """
-    def __init__(self, envi, location):
+    def __init__(self, envi, location, doctype=None):
         _set_envi(envi)
         self.envi = envi
-        self.doctype = cfg.doctype
+        if doctype is None:
+            self.doctype = cfg.doctype
+        else:
+            self.doctype = doctype
         self._root_ext_loc = location
         self._generate_content()
         envi.start_response()
