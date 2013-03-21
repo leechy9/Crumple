@@ -6,7 +6,10 @@ software, since it covers setup, configuration, an overview, and examples. In
 addition to the documentation, there are a few example files included in the
 'extensions', 'templates', and 'pages' directories.
 
-For developers who want to modify Crumple, most test cases should be covered in the example files mentioned above. A more thorough suite of tests has been included in 'extensions/test/' and 'templates/test/'. Accessing the page titled 'test.py' will provide tests for user inputs.
+For developers who want to modify Crumple, most test cases should be covered 
+in the example files mentioned above. A more thorough suite of tests has been
+included in 'extensions/test/' and 'templates/test/'. Accessing the page titled
+'test.py' will provide tests for user inputs.
 
 Crumple relies on Python (version 2.6 or higher), mod_wsgi, and Apache. While 
 this project has only been tested with mod_wsgi, it should work on other WSGI 
