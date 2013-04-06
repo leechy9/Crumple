@@ -53,3 +53,14 @@ content_type = 'text/html'
  The default is the XHTML5/HTML5 doctype.
 """
 doctype = '<!DOCTYPE html>\n'
+
+
+"""
+ Sets the maximum content-length that is allowed to be read in.
+ Will throw an exception if this maximum size of a request is exceeded.
+ This will need to be changed if large uploads are expected.
+ The value is the number of bytes to accept before rejecting more content.
+"""
+# The default value is 20971520 bytes (20MB)
+max_content_length = 20971520
+

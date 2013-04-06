@@ -24,13 +24,15 @@
     <a href="/wsgi/test.py?garbage=junk&amp;testType=GET">Test GET data</a>
     <br />
     <br />
-    <form action="/wsgi/test.py" method="post">
+    <form action="/wsgi/test.py" method="post" enctype="multipart/form-data">
         <input type="hidden" value="junk" name="garbage" />
         <input type="hidden" value="POST" name="testType" />
-        <input type="submit" value="Test POST data" />
+        <input type="file" value="Choose a file" name="testFile" />
+        <input type="submit" value="Test POST data and file upload" />
     </form>
 
     <p>The value and type of the user input was: <_extension location="test.displayInputs" /></p>
+    <p>The name of the file uploaded was: <_extension location="test.displayUpload" /></p>
         
     <p>This paragraph should be the last item in body.</p>
             

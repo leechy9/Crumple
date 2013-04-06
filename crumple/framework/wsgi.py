@@ -16,6 +16,8 @@ along with Crumple.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import cgi
+import tempfile
+import os.path
 # Python 2 compatibility check
 try:
     import http.cookies as cookie
@@ -43,6 +45,12 @@ class Envi:
     def __init__(self, environ, start_response, defaults=False):
         self._start_response = staticmethod(start_response)
         self.environ = environ
+
+        # Deny extremely large requests immediately
+        content_length = int(self.environ.get('CONTENT_LENGTH', '0'))
+        if content_length > cfg.max_content_length:
+            raise Exception('Maximum Content-length exceeded.')
+
         # Handle headers and response
         if not defaults:
             self.status = ''
@@ -50,13 +58,41 @@ class Envi:
         else:
             self.status = '200 OK'
             self.response_headers = [('Content-type', cfg.content_type)]
+
         # Handle cookies
         self.cookies = {}
         if 'HTTP_COOKIE' in self.environ:
             self.cookies = cookie.SimpleCookie(environ['HTTP_COOKIE'])
-        # Handle GET and POST data
-        self.field_storage = \
-         cgi.FieldStorage(self.environ['wsgi.input'], environ=self.environ)
+        
+        # Read the content into a temporary file
+        input_stream = self.environ['wsgi.input']
+        temp_file = tempfile.TemporaryFile(mode='w+b')
+        total_length = 0
+        # Keep reading bytes until the content length is reached
+        while content_length > 0:
+            # Get the amount of data to read from the stream 200KB chunks
+            chunk_size = min(content_length, 204800)
+            chunk = input_stream.read(chunk_size)
+            # Stop if attempting to read non-existent bytes
+            if not chunk:
+                break
+            # Check to ensure extremely large content is not accepted.
+            total_length += len(chunk)
+            if total_length > cfg.max_content_length:
+                raise Exception('Maximum Content-length exceeded.')
+            # Write stream to temporary file
+            temp_file.write(chunk)
+            content_length -= len(chunk)
+        # Allow the input to be read again later
+        temp_file.seek(0)
+        self.environ['wsgi.input'] = temp_file
+
+        # Handle GET and POST data with the temporary file of inputs
+        self.field_storage = cgi.FieldStorage( \
+         temp_file, \
+         environ=self.environ, \
+         keep_blank_values=True \
+        )
 
     """
      Returns the string value of the cookie or None if it does not exist.
@@ -77,6 +113,28 @@ class Envi:
     """
     def get_input(self, name):
         return self.field_storage.getfirst(name)
+
+    """
+     Gets the uploaded file from the name specified.
+     Returns the file object or None if it does not exist.
+      Accessing the returned file_object.filename will get the file's name.
+      Accessing the returned file_object.file will get the stream of the file.
+     Required parameters:
+       name - string, name of the file to retrieve.
+    """
+    def get_file(self, name):
+        # Check if the file exists
+        if name in self.field_storage:
+            file_object = self.field_storage[name]
+            # Take only the base name of the file
+            file_object.filename = os.path.basename(file_object.filename)
+            # If the file does not have a name, assume it was not uploaded
+            if file_object.filename == '':
+                return None
+            else:
+                return file_object
+        else:
+            return None
 
     """
      Extends the response headers that will be sent to the client
