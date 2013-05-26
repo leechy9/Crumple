@@ -34,7 +34,8 @@ class TemplateParser:
      Optional parameters:
        insert - list(Element), the list of Elements to insert
     """
-    def __init__(self, insert=[]):
+    def __init__(self, envi, insert=[]):
+        self._envi = envi
         self._is_first_element = True
         self._is_tail_data = False
         self._tmp_element = None
@@ -96,8 +97,8 @@ class TemplateParser:
         if tag == '_template':
             # Create new template and get output as list of Elements
             children = list(self._previous_element)
-            tmp_templ = \
-             Template(self._previous_element.attrib['location'], children)
+            tmp_templ = Template( \
+             self._previous_element.attrib['location'], self._envi, children)
             tmp_elems = [tmp_templ.get_output()]
             # Check if root element of the document is a template
             if self._root_element != self._previous_element:
@@ -110,8 +111,8 @@ class TemplateParser:
         elif tag == '_extension':
             # Create new extension and get output as list of Elements
             children = list(self._previous_element)
-            tmp_ext = \
-             ext.Extension(self._previous_element.attrib['location'], children)
+            tmp_ext = ext.Extension( \
+             self._previous_element.attrib['location'], self._envi, children)
             tmp_elems = [tmp_ext.get_output()]
             # Check if root element of the document is an extension
             if self._root_element != self._previous_element:
@@ -156,10 +157,11 @@ class Template:
      Recursively parse this template and all sub-templates
      Required parameters:
        location - String, relative location to import
+       envi - framework.wsgi.envi, the envi object to give to the extension
      Optional parameters:
        insert - list(Element), list of Elements to replace _insert tags
     """
-    def __init__(self, location, insert=[]):
+    def __init__(self, location, envi, insert=[]):
         # Get absolute path to template from relative path given
         template_loc = os.path.join(cfg.template_location, location)
         template_text = ''
@@ -167,7 +169,7 @@ class Template:
             for line in template_file:
                 template_text += line
         # Parse the template
-        target = TemplateParser(insert)
+        target = TemplateParser(envi, insert)
         parser = ET.XMLTreeBuilder(target=target)
         parser.feed(template_text)
         self._template_root = parser.close()

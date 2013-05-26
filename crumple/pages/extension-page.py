@@ -8,5 +8,5 @@ def application(environ, start_response):
     envi = wsgi.Envi(environ, start_response, False)
     envi.status = '200 OK'
     envi.extend_headers([('Content-type', 'text/html')])
-    page = fp.ExtensionPage(envi, extension)
+    page = fp.ExtensionPage(extension, envi)
     return page.get_output()

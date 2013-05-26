@@ -3,10 +3,9 @@
 import xml.etree.ElementTree as ET
 
 import framework.wsgi
-import framework.page
 
 
-def get_output(insert):
+def get_output(envi, insert):
     html = ET.Element('html')
     head = ET.SubElement(html, 'head')
     body = ET.SubElement(html, 'body')
@@ -15,5 +14,5 @@ def get_output(insert):
     h1 = ET.SubElement(body, 'h1')
     h1.text = 'Extension Test'
     p = ET.SubElement(body, 'p')
-    p.text = str(framework.page.envi.environ)
+    p.text = str(envi.environ)
     return html

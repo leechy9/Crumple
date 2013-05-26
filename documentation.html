@@ -370,13 +370,14 @@
 
             <!--=========Extension Basics=========-->
             <h3 id="basicExtensions">Extension Basics</h3>
-            <p>All extensions are simply Python source code and must include one function: <span class="code">get_output(insert=[])</span>. This method is responsible for returning a single Element object as its output. Any of the returned Element's children --added using the <span class="code">SubElement()</span> method-- will be included in the extension's output.</p>
-            <p>The <span class="code">insert=[]</span> parameter is required, as it is the list of Elements that are contained inside the _extension tag (see the <a href="#extensionTag">section on _extension tag</a> for more information).
+            <p>All extensions are simply Python source code and must include one function: <span class="code">get_output(envi, insert=[])</span>. This method is responsible for returning a single Element object as its output. Any of the returned Element's children --added using the <span class="code">SubElement()</span> method-- will be included in the extension's output.</p>
+            <p>The <span class="code">envi</span> parameter is required and will be explained in a future section (see the <a href="#enviObjects">section on envi</a> for more information).</p>
+            <p>The <span class="code">insert=[]</span> parameter is required, as it is the list of Elements that are contained inside the _extension tag (see the <a href="#extensionTag">section on _extension tag</a> for more information).</p>
             <p>A complete example of an extension:</p>
             <div class="codeBlock">
                 <p>
                     import xml.etree.ElementTree as ET <br /><br />
-                    def get_output(insert=[]): <br />
+                    def get_output(envi, insert=[]): <br />
                     &ensp;&ensp;div = ET.Element(&quot;div&quot;) <br />
                     &ensp;&ensp;p = ET.SubElement(div, &quot;p&quot;) <br />
                     &ensp;&ensp;p.text = &quot;Hello World!&quot; <br />
@@ -402,14 +403,14 @@
                     <br />
                     import framework.extension as ext<br />
                     <br />
-                    def get_output(insert=[]): <br />
+                    def get_output(envi, insert=[]): <br />
                     &ensp;&ensp;div = ET.Element(&quot;div&quot;) <br />
                     &ensp;&ensp;p = ET.SubElement(div, &quot;p&quot;) <br />
                     &ensp;&ensp;p.text = &quot;Hello World!&quot; <br />
                     &ensp;&ensp;# Insert new content into the base_page extension <br />
                     &ensp;&ensp;insert_elems = [div] <br />
                     &ensp;&ensp;# Call another extension <br />
-                    &ensp;&ensp;base_page = ext.Extension(&quot;base_page&quot;, insert_elems) <br />
+                    &ensp;&ensp;base_page = ext.Extension(&quot;base_page&quot;, envi, insert_elems) <br />
                     &ensp;&ensp;return base_page.get_output() <br />
                 </p>
             </div>
@@ -418,7 +419,7 @@
                 <p>
                     import xml.etree.ElementTree as ET<br />
                     <br />
-                    def get_output(insert=[]): <br />
+                    def get_output(envi, insert=[]): <br />
                     &ensp;&ensp;html = ET.Element(&quot;html&quot;) <br />
                     &ensp;&ensp;head = ET.SubElement(html, &quot;head&quot;) <br />
                     &ensp;&ensp;title = ET.SubElement(head, &quot;title&quot;) <br />
@@ -467,7 +468,7 @@
                     def application(environ, start_response): <br />
                     &ensp;&ensp;extension = &quot;extExamples.extension1&quot; <br />
                     &ensp;&ensp;envi = wsgi.Envi(environ, start_response, True) <br />
-                    &ensp;&ensp;page = fp.ExtensionPage(envi, extension) <br />
+                    &ensp;&ensp;page = fp.ExtensionPage(extension, envi) <br />
                     &ensp;&ensp;return page.get_output() <br />
                 </p>
             </div>
@@ -481,14 +482,14 @@
                     def application(environ, start_response): <br />
                     &ensp;&ensp;template = &quot;tmplExamples/template1.tmpl&quot; <br />
                     &ensp;&ensp;envi = wsgi.Envi(environ, start_response, True) <br />
-                    &ensp;&ensp;page = fp.TemplatePage(envi, template) <br />
+                    &ensp;&ensp;page = fp.TemplatePage(template, envi) <br />
                     &ensp;&ensp;return page.get_output() <br />
                 </p>
             </div>
             <p class="highlight">Note that in both of the examples above, the extensions and templates were imported relative to the location set in <span class="code">framework/config.py</span>.</p>
             <p>A third optional parameter may be set to override the default doctype for both types of pages. Simply give the document the string value to use as the new doctype. If this is not set, then the pages default to the value located in <span class="code">framework.config</span>.</p>
             <p>For example:</p>
-            <div class="codeBlock">page = framework.page.TemplatePage(envi, template, &quot;&lt;!DOCTYPE html&gt;&quot;)</div>
+            <div class="codeBlock">page = framework.page.TemplatePage(template, envi, &quot;&lt;!DOCTYPE html&gt;&quot;)</div>
             <p>The above example would override the default doctype with the third parameter given.</p>
 
             <!--=========Envi Objects=========-->
@@ -506,7 +507,7 @@
                     &ensp;&ensp;envi.status = &quot;200 OK&quot; <br />
                     &ensp;&ensp;headers = [(&quot;Content-type&quot;, &quot;text/html&quot;)] <br />
                     &ensp;&ensp;envi.extend_headers(headers) <br />
-                    &ensp;&ensp;page = fp.ExtensionPage(envi, extension) <br />
+                    &ensp;&ensp;page = fp.ExtensionPage(extension, envi) <br />
                     &ensp;&ensp;return page.get_output() <br />
                 </p>
             </div>
@@ -516,7 +517,6 @@
             <h3 id="userInputs">User Inputs</h3>
             <p>Envi objects also provide the <span class="code">get_input(key)</span> and <span class="code">get_cookie(key)</span> methods to retrieve data sent to the page from the client. Each takes in the string key of the input/cookie to retrieve and returns the value associated with it. If no key exists, then the return value is <span class="code">None</span>.</p>
             <p>Files that have been uploaded by users can be accessed through the <span class="code">get_file(key)</span> method where <span class="code">key</span> is the input name given to the file uploaded by the HTML. If the file is not found, then <span class="code">None</span> is returned. If the file exists, then a file object will be returned. To get the actual string name of the file that was uploaded, access the <span class="code">file_object.filename</span> variable. To get the file as a stream of raw bytes, simply use the <span class="code">file_object.file</span> variable; this stream can be read just like any other file stream in Python.</p>
-            <p>It is also possible to access the Envi object from inside of extensions. To do this, simply <span class="code">import framework.page</span> inside of the extension. To retrieve the Envi that is associated with the current page that is being requested and store it in a temporary variable, write <span class="code">temp_envi = framework.page.envi</span>. Extensions can then access <span class="code">temp_envi</span> as if it were any normal Envi object.</p>
         </div>
 
         <!--=========Useful Tips=========-->

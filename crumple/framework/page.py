@@ -34,14 +34,13 @@ class TemplatePage:
     """
      Create page and send response headers to client
      Required parameters:
-       envi - framework.wsgi.envi, the envi object for this page to use
        location - string, relative location of the root template
+       envi - framework.wsgi.envi, the envi object for this page to use
      Optional parameters:
        doctype - string, the doctype to use for this page. 
         Defaults to the value set in framework.config.
     """
-    def __init__(self, envi, location, doctype=None):
-        _set_envi(envi)
+    def __init__(self, location, envi, doctype=None):
         self.envi = envi
         if doctype is None:
             self.doctype = cfg.doctype
@@ -59,7 +58,7 @@ class TemplatePage:
     """
     def _generate_content(self):
         # Generate the page
-        self.root_template = tmpl.Template(self._root_tmpl_loc)
+        self.root_template = tmpl.Template(self._root_tmpl_loc, self.envi)
         self.output = \
          self.doctype + \
          ET.tostring(self.root_template.get_output(), 'utf-8')
@@ -89,8 +88,7 @@ class ExtensionPage:
        doctype - string, the doctype to use for this page. 
         Defaults to the value set in framework.config.
     """
-    def __init__(self, envi, location, doctype=None):
-        _set_envi(envi)
+    def __init__(self, location, envi, doctype=None):
         self.envi = envi
         if doctype is None:
             self.doctype = cfg.doctype
@@ -107,7 +105,7 @@ class ExtensionPage:
     """
     def _generate_content(self):
         # Generate the page
-        self.root_extension = ext.Extension(self._root_ext_loc)
+        self.root_extension = ext.Extension(self._root_ext_loc, self.envi)
         self.output = \
          self.doctype + \
          ET.tostring(self.root_extension.get_output(), 'utf-8')
@@ -121,14 +119,4 @@ class ExtensionPage:
     def get_output(self):
         return [self.output]
 
-
-
-"""
- Sets envi as a global object of the page module. Internal use only.
- Required parameters:
-   envi_ - envi, the object to set as the global variable named 'envi'
-"""
-def _set_envi(envi_):
-    global envi
-    envi = envi_
 

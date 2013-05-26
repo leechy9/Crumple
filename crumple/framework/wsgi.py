@@ -115,6 +115,15 @@ class Envi:
         return self.field_storage.getfirst(name)
 
     """
+     Checks Get and Post data for multiple values.
+     Returns a list(string) value of the input or an empty list if none found.
+     Required parameters:
+       name - string, name of the input to get the value from.
+    """
+    def get_input_list(self, name):
+        return self.field_storage.getlist(name)
+
+    """
      Gets the uploaded file from the name specified.
      Returns the file object or None if it does not exist.
       Accessing the returned file_object.filename will get the file's name.
