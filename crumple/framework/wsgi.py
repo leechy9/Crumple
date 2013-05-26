@@ -157,6 +157,10 @@ class Envi:
      Responds to the client with the appropriate http headers
     """
     def start_response(self):
-        self._start_response.__func__(self.status, self.response_headers)
-
+        # Fixes incompatibility between Python 2.6 and 2.7
+        try:
+            start_response = self._start_response.__func__
+        except AttributeError:
+            start_response = self._start_response.__get__(None, object)
+        start_response(self.status, self.response_headers)
 
