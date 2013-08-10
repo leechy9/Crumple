@@ -43,7 +43,7 @@ class Envi:
          False requires the status and Content-type to be set manually.
     """
     def __init__(self, environ, start_response, defaults=False):
-        self._start_response = staticmethod(start_response)
+        self._start_response = start_response
         self.environ = environ
 
         # Deny extremely large requests immediately
@@ -157,10 +157,5 @@ class Envi:
      Responds to the client with the appropriate http headers
     """
     def start_response(self):
-        # Fixes incompatibility between Python 2.6 and 2.7
-        try:
-            start_response = self._start_response.__func__
-        except AttributeError:
-            start_response = self._start_response.__get__(None, object)
-        start_response(self.status, self.response_headers)
+        staticmethod(self._start_response(self.status, self.response_headers))
 
