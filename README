@@ -6,6 +6,9 @@ software, since it covers setup, configuration, an overview, and examples. In
 addition to the documentation, there are a few example files included in the
 'extensions', 'templates', and 'pages' directories.
 
+The documentation can be viewed by opening the file 'documentation.html' in a
+web browser or accessed online at http://leechy9.github.io/Crumple .
+
 For developers who want to modify Crumple, most test cases should be covered 
 in the example files mentioned above. A more thorough suite of tests has been
 included in 'extensions/test/' and 'templates/test/'. Accessing the page titled
