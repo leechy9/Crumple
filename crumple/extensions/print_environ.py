@@ -14,5 +14,7 @@ def get_output(envi, insert):
     h1 = ET.SubElement(body, 'h1')
     h1.text = 'Extension Test'
     p = ET.SubElement(body, 'p')
+    p.text = 'This is the environment data received from the server.'
+    p = ET.SubElement(body, 'p')
     p.text = str(envi.environ)
     return html
