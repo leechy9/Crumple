@@ -21,19 +21,19 @@ import xml.etree.ElementTree as ET
 # Framework imports
 import framework.config as cfg
 
-"""
- An Extension object. Resposible for importing and executing extensions.
-"""
 class Extension:
+    """
+    An Extension object. Resposible for importing and executing extensions.
+    """
 
-    """
-     Required parameters:
-       location - String, relative location to import
-       envi - framework.wsgi.envi, the envi object to give to the extension
-     Optional parameters:
-       insert - list(Element), the list of Elements to insert
-    """
     def __init__(self, location, envi, insert=[]):
+        """
+        Args:
+          location (string): relative location to import
+          envi (framework.wsgi.envi): the envi object to give to the extension
+          insert (list[Element]): the list of Elements to insert
+            (default is an empty list)
+        """
         self._insert = insert
         self._envi = envi
         # Import module from location specified
@@ -41,9 +41,10 @@ class Extension:
         self.module = \
          __import__(self._extension_loc, fromlist=[cfg.extension_location])
 
-    """
-     Return the output of the Extension as an Element
-    """
     def get_output(self):
+        """
+        Returns:
+          The output of the Extension as an Element.
+        """
         # Execute the get_output() method from the extension
         return self.module.get_output(self._envi, self._insert)

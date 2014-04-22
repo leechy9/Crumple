@@ -27,22 +27,22 @@ except ImportError:
 import framework.config as cfg
 
 
-"""
- Handles the WSGI environ and start_response objects.
-"""
 class Envi:
+    """
+    Handles the WSGI environ and start_response objects.
+    """
 
-    """
-     Create a new Envi for handling WSGI objects.
-     Required parameters:
-       environ - WSGI standard environ variable
-       start_response - WSGI standard start_response variable
-     Optional parameters:
-       defaults - boolean 
-         True uses the Content-type set in config and '200 OK' as the status.
-         False requires the status and Content-type to be set manually.
-    """
     def __init__(self, environ, start_response, defaults=False):
+        """
+        Create a new Envi for handling WSGI objects.
+        Args:
+          environ: WSGI standard environ variable
+          start_response: WSGI standard start_response variable
+          defaults (boolean):
+            True uses the Content-type set in config and '200 OK' as the status.
+            False requires the status and Content-type to be set manually.
+            (default is False)
+        """
         self._start_response = start_response
         self.environ = environ
 
@@ -94,44 +94,44 @@ class Envi:
          keep_blank_values=True \
         )
 
-    """
-     Returns the string value of the cookie or None if it does not exist.
-     Required parameters:
-       name - string, name of the cookie to get the value from.
-    """
     def get_cookie(self, name):
+        """
+        Args:
+          name (string): name of the cookie to get the value from.
+        Returns: The string value of the cookie or None if it does not exist.
+        """
         value = None
         if name in self.cookies:
             value = self.cookies[name].value
         return value
 
-    """
-     Checks Get and Post data for values.
-     Returns the string value of the input or None if it does not exist.
-     Required parameters:
-       name - string, name of the input to get the value from.
-    """
     def get_input(self, name):
+        """
+        Checks Get and Post data for values.
+        Required parameters:
+          name (string): name of the input to get the value from.
+        Returns: The string value of the input or None if it does not exist.
+        """
         return self.field_storage.getfirst(name)
 
-    """
-     Checks Get and Post data for multiple values.
-     Returns a list(string) value of the input or an empty list if none found.
-     Required parameters:
-       name - string, name of the input to get the value from.
-    """
     def get_input_list(self, name):
+        """
+        Checks Get and Post data for multiple values.
+        Args:
+          name (string): name of the input to get the value from.
+        Returns: a list[string] value of the input or an empty list if none found.
+        """
         return self.field_storage.getlist(name)
 
-    """
-     Gets the uploaded file from the name specified.
-     Returns the file object or None if it does not exist.
-      Accessing the returned file_object.filename will get the file's name.
-      Accessing the returned file_object.file will get the stream of the file.
-     Required parameters:
-       name - string, name of the file to retrieve.
-    """
     def get_file(self, name):
+        """
+        Gets the uploaded file from the name specified.
+        Args:
+          name (string): name of the file to retrieve.
+        Returns: the file object or None if it does not exist.
+         file_object.filename will get the file's name.
+         file_object.file will get the stream of the file.
+        """
         # Check if the file exists
         if name in self.field_storage:
             file_object = self.field_storage[name]
@@ -145,17 +145,18 @@ class Envi:
         else:
             return None
 
-    """
-     Extends the response headers that will be sent to the client
-     Required parameters:
-       headers - list((string, string)), list of tuples to add to the headers
-    """
     def extend_headers(self, headers):
+        """
+        Extends the response headers that will be sent to the client
+        Args:
+          headers (list[(string, string)]): list of tuples to add to the headers
+        """
         self.response_headers.extend(headers)
 
-    """
-     Responds to the client with the appropriate http headers
-    """
     def start_response(self):
+        """
+        Responds to the client with the appropriate http headers
+        """
         staticmethod(self._start_response(self.status, self.response_headers))
+
 

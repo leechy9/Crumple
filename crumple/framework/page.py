@@ -25,22 +25,21 @@ import framework.config as cfg
 import framework.wsgi
 
 
-"""
- A web page with a template as the initial frame.
- Reads in a valid template and creates a page from it.
-"""
 class TemplatePage:
+    """
+    A web page with a template as the initial frame.
+    Reads in a valid template and creates a page from it.
+    """
 
-    """
-     Create page and send response headers to client
-     Required parameters:
-       location - string, relative location of the root template
-       envi - framework.wsgi.envi, the envi object for this page to use
-     Optional parameters:
-       doctype - string, the doctype to use for this page. 
-        Defaults to the value set in framework.config.
-    """
     def __init__(self, location, envi, doctype=None):
+        """
+        Create page and send response headers to client
+        Args:
+          location (string): relative location of the root template
+          envi (framework.wsgi.envi): the envi object for this page to use
+          doctype (string): the doctype to use for this page. 
+           (default is the value set in framework.config)
+        """
         self.envi = envi
         if doctype is None:
             self.doctype = cfg.doctype
@@ -50,13 +49,13 @@ class TemplatePage:
         self._generate_content()
         envi.start_response()
 
-    """
-     Responsible for handling the content generated.
-     Automagically find extensions and templates to use.
-     Set output as a string representation of xhtml.
-     Set the Content-length http header.
-    """
     def _generate_content(self):
+        """
+        Responsible for handling the content generated.
+        Automagically find extensions and templates to use.
+        Set output as a string representation of xhtml.
+        Set the Content-length http header.
+        """
         # Generate the page
         self.root_template = tmpl.Template(self._root_tmpl_loc, self.envi)
         self.output = \
@@ -66,29 +65,28 @@ class TemplatePage:
         length = str(len(self.output))
         self.envi.extend_headers([('Content-length', length)])
         
-    """
-     Return the output of the page as a list of strings.
-    """
     def get_output(self):
+        """
+        Returns: The output of the page as a list of strings.
+        """
         return [self.output]
 
 
-"""
- A web page with an extension as the initial frame.
- Imports a valid extension and creates a page from it.
-"""
 class ExtensionPage:
+    """
+    A web page with an extension as the initial frame.
+    Imports a valid extension and creates a page from it.
+    """
 
-    """
-     Create page and send response headers to client
-     Required parameters:
-       envi - framework.wsgi.envi, the envi object for this page to use
-       location - string, relative location of the root extension
-     Optional parameters:
-       doctype - string, the doctype to use for this page. 
-        Defaults to the value set in framework.config.
-    """
     def __init__(self, location, envi, doctype=None):
+        """
+        Create page and send response headers to client
+        Args:
+          envi (framework.wsgi.envi): the envi object for this page to use
+          location (string): relative location of the root extension
+          doctype (string): the doctype to use for this page.
+            (default is the value set in framework.config)
+        """
         self.envi = envi
         if doctype is None:
             self.doctype = cfg.doctype
@@ -98,12 +96,12 @@ class ExtensionPage:
         self._generate_content()
         envi.start_response()
 
-    """
-     Responsible for handling the content generated.
-     Automagically find extensions and templates to use.
-     Set output as a string representation of xhtml.
-    """
     def _generate_content(self):
+        """
+        Responsible for handling the content generated.
+        Automagically find extensions and templates to use.
+        Set output as a string representation of xhtml.
+        """
         # Generate the page
         self.root_extension = ext.Extension(self._root_ext_loc, self.envi)
         self.output = \
@@ -113,10 +111,9 @@ class ExtensionPage:
         length = str(len(self.output))
         self.envi.extend_headers([('Content-length', length)])
         
-    """
-     Return the output of the page as a list of strings.
-    """
     def get_output(self):
+        """
+        Returns: The output of the page as a list of strings.
+        """
         return [self.output]
-
 

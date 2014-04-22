@@ -24,17 +24,18 @@ import copy
 import framework.config as cfg
 import framework.extension as ext
 
-"""
- A custom object used in a TreeBuilder to parse the templates.
- See the xml.etree.ElementTree for more info on TreeBuilder.
-"""
 class TemplateParser:
+    """
+    A custom object used in a TreeBuilder to parse the templates.
+    See the xml.etree.ElementTree for more info on TreeBuilder.
+    """
 
-    """
-     Optional parameters:
-       insert - list(Element), the list of Elements to insert
-    """
     def __init__(self, envi, insert=[]):
+        """
+        Args:
+          insert (list[Element]): the list of Elements to insert
+            (default is an empty list)
+        """
         self._envi = envi
         self._is_first_element = True
         self._is_tail_data = False
@@ -45,15 +46,15 @@ class TemplateParser:
         self._elem_stack = []
 
 
-    """
-     Utility method used to replace an element with another element.
-     Internal use only.
-     Required parameters:
-       root_elem - Element, the root element to search through
-       find_elem - Element, the element to find and replace
-       replace_elems - list(Elements), the list of elements replacing find_elem
-    """
     def _replace_element(self, root_elem, find_elem, replace_elems):
+        """
+        Utility method used to replace an element with another element.
+        Internal use only.
+        Args:
+           root_elem (Element): the root element to search through
+           find_elem (Element): the element to find and replace
+           replace_elems (list[Element]): the list of elements replacing find_elem
+        """
         # Fix for deprecated method in Python versions less than 2.7
         try:
             iterator = root_elem.iter()
@@ -73,8 +74,8 @@ class TemplateParser:
                 index += 1
     
 
-    """Handle the opening of tags"""
     def start(self, tag, attrib):
+        """Handle the opening of tags"""
         self._is_tail_data = False
         self._tmp_element = ET.Element(tag, attrib)
         # Check to see if first element
@@ -89,8 +90,8 @@ class TemplateParser:
             self._elem_stack.append(self._tmp_element)
 
 
-    """Handle the closing of tags"""
     def end(self, tag):
+        """Handle the closing of tags"""
         self._previous_element = self._elem_stack.pop()
         self._is_tail_data = True
         # Replace _template tag with parsed output
@@ -131,8 +132,8 @@ class TemplateParser:
             self._previous_element = insert_copy[len(insert_copy)-1]
             
 
-    """Handle the inner data of each tag"""
     def data(self, data):
+        """Handle the inner data of each tag"""
         # Check if the data is tail or inner text
         if self._is_tail_data:
             # Check if tail already exists so data can be appended properly
@@ -143,25 +144,25 @@ class TemplateParser:
         else:
             self._elem_stack[-1].text = data
 
-    """Return the root Element"""
     def close(self):
+        """Return the root Element"""
         return self._root_element
 
 
-"""
- A template object. Resposible for reading and parsing template files.
-"""
 class Template:
+    """
+    A template object. Resposible for reading and parsing template files.
+    """
 
-    """
-     Recursively parse this template and all sub-templates
-     Required parameters:
-       location - String, relative location to import
-       envi - framework.wsgi.envi, the envi object to give to the extension
-     Optional parameters:
-       insert - list(Element), list of Elements to replace _insert tags
-    """
     def __init__(self, location, envi, insert=[]):
+        """
+        Recursively parse this template and all sub-templates
+        Args:
+          location (string): relative location to import
+          envi (framework.wsgi.envi): the envi object to give to the extension
+          insert (list[Element]): list of Elements to replace _insert tags
+            (default is an empty list)
+        """
         # Get absolute path to template from relative path given
         template_loc = os.path.join(cfg.template_location, location)
         template_text = ''
@@ -175,10 +176,10 @@ class Template:
         self._template_root = parser.close()
         
 
-    """
-     Return the parsed template as an Element
-    """
     def get_output(self):
+        """
+        Returns: The parsed template as an Element
+        """
         return self._template_root
 
 

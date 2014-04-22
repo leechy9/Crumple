@@ -41,8 +41,8 @@ extension_location = 'extensions'
 """
  Sets the Content-type http response header.
  For most uses, this can be left alone.
- The default is the standard header for xhtml: application/xhtml+xml
  Use the HTML5 header to have less strict parsing: text/html
+ The standard header for xhtml: application/xhtml+xml
 """
 content_type = 'text/html'
 #content_type = 'application/xhtml+xml'
