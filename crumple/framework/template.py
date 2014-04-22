@@ -129,7 +129,8 @@ class TemplateParser:
             # Replace _insert element with the copied Element
             self._replace_element(\
              self._root_element, self._previous_element, insert_copy)
-            self._previous_element = insert_copy[len(insert_copy)-1]
+            if len(insert_copy) > 0:
+                self._previous_element = insert_copy[len(insert_copy)-1]
             
 
     def data(self, data):
