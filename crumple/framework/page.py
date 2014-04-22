@@ -60,7 +60,7 @@ class TemplatePage:
         self.root_template = tmpl.Template(self._root_tmpl_loc, self.envi)
         self.output = \
          self.doctype + \
-         ET.tostring(self.root_template.get_output(), 'unicode')
+         ET.tostring(self.root_template.get_output(), 'UTF-8')
         #Add the Content-length as an http header
         length = str(len(self.output))
         self.envi.extend_headers([('Content-length', length)])
@@ -106,7 +106,7 @@ class ExtensionPage:
         self.root_extension = ext.Extension(self._root_ext_loc, self.envi)
         self.output = \
          self.doctype + \
-         ET.tostring(self.root_extension.get_output(), 'unicode')
+         ET.tostring(self.root_extension.get_output(), 'UTF-8')
         #Add the Content-length as an http header
         length = str(len(self.output))
         self.envi.extend_headers([('Content-length', length)])

@@ -50,9 +50,10 @@ content_type = 'text/html'
 
 """
  Sets the default doctype appended to the top of each page.
+ This value must be a byte-string for Python 2 and 3 compatibility.
  The default is the XHTML5/HTML5 doctype.
 """
-doctype = '<!DOCTYPE html>\n'
+doctype = b'<!DOCTYPE html>\n'
 
 
 """
