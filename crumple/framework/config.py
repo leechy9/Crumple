@@ -1,4 +1,4 @@
-"""
+'''
 This file is part of Crumple.
 
 Crumple is free software: you can redistribute it and/or modify
@@ -13,55 +13,53 @@ GNU General Public License for more details.
 
 You should have received a copy of the GNU General Public License
 along with Crumple.  If not, see <http://www.gnu.org/licenses/>.
-"""
+'''
+
+import os
+import sys
+
+'''
+This file stores variables used throughout the framework.
+Meant to be edited by the user.
+'''
+
+'''
+The following are for automagically finding out where the script resides.
+'''
+script_location = os.path.dirname(os.path.normpath(__file__))
+base_location = os.path.normpath(os.path.join(script_location, '..'))
+
+'''
+Add the `library` directory to the system path.
+'''
+sys.path.append(os.path.join(base_location, 'libraries'))
+
+'''
+The root directory that templates are stored in. Should be automatically
+configured, but available to edit as a fallback.
+'''
+template_location = os.path.join(base_location, 'templates')
 
 
-
-"""
- Stores variables used throughout the framework.
- Meant to be edited by the user.
-"""
-
-
-"""
- The root directory that templates are stored in. Sub-directories are
-  denoted by '/'.
-"""
-template_location = '/srv/http/crumple/templates'
-
-
-"""
- The location relative to the WSGIPythonPath to import extensions from.
- Should use '.' instead of '/' to specify sub-directories.
-  (like importing packages and modules in python)
-"""
-extension_location = 'extensions'
-
-
-"""
- Sets the Content-type http response header.
- For most uses, this can be left alone.
- Use the HTML5 header to have less strict parsing: text/html
- The standard header for xhtml: application/xhtml+xml
-"""
+'''
+Sets the Content-Type http response header.
+For most uses, this can be left alone.
+Use the HTML5 header to have less strict parsing: text/html
+The standard header for xhtml: application/xhtml+xml
+'''
 content_type = 'text/html'
 #content_type = 'application/xhtml+xml'
 
 
-"""
- Sets the default doctype appended to the top of each page.
- This value must be a byte-string for Python 2 and 3 compatibility.
- The default is the XHTML5/HTML5 doctype.
-"""
+'''
+Sets the default doctype appended to the top of each page.
+This value must be a byte-string for Python 2 and 3 compatibility.
+The default is the XHTML5/HTML5 doctype.
+'''
 doctype = b'<!DOCTYPE html>\n'
 
-
-"""
- Sets the maximum content-length that is allowed to be read in.
- Will throw an exception if this maximum size of a request is exceeded.
- This will need to be changed if large uploads are expected.
- The value is the number of bytes to accept before rejecting more content.
-"""
-# The default value is 20971520 bytes (20MB)
-max_content_length = 20971520
+'''
+The standard block size to use when reading a file.
+'''
+block_size = 4096
 

@@ -1,16 +1,16 @@
-<_template location="pageFrame.tmpl">
+<_template location="page_frame.tmpl">
     <p>This paragraph should be the first item in body.</p>
     <p><em>This page is a series of all test cases, which should cover every scenario available in Crumple.</em></p>
 
     <h2>Nested extensions</h2>
     <p>The next item should be an ordered list inside of a div.</p>
-    <_extension location="test.extTest1">
-        <_extension location="test.extTest2" />
+    <_extension location="test/test1">
+        <_extension location="test/test2" />
     </_extension>
 
     <h2>Templates inside extensions</h2>
     <p>The next item should be an unordered list.</p>
-    <_extension location="test.extTest1">
+    <_extension location="test/test1">
         <_template location="test/ul.tmpl">
             <li>Apples</li>
             <li>Bananas</li>
@@ -22,21 +22,30 @@
     <p>This should be the only content in this section. Blank inserts should not throw errors.</p>
     <_insert />
 
+    <h2>Imports</h2>
+    <p><_extension location="test/imports" /></p>
+
+    <h2>Static Files</h2>
+    <p>The static file served should be a template file named <a href="static_page">StaticFile.txt</a></p>
+
+    <h2>Cookies</h2>
+    <p>The cookie given to this page was: <_extension location="test/cookies" /></p>
+
     <h2>User inputs</h2>
     <p>Click the items below to test the user inputs. The page should reload and have a message notifying of the user inputs.</p>
 
-    <a href="/wsgi/test.py?garbage=junk&amp;testType=GET">Test GET data</a>
+    <a href="full_test?garbage=junk&amp;testType=GET">Test GET data</a>
     <br />
     <br />
-    <form action="/wsgi/test.py" method="post" enctype="multipart/form-data">
+    <form action="full_test" method="post" enctype="multipart/form-data">
         <input type="hidden" value="junk" name="garbage" />
         <input type="hidden" value="POST" name="testType" />
         <input type="file" value="Choose a file" name="testFile" />
         <input type="submit" value="Test POST data and file upload" />
     </form>
 
-    <p>The value and type of the user input was: <_extension location="test.displayInputs" /></p>
-    <p>The name of the file uploaded was: <_extension location="test.displayUpload" /></p>
+    <p>The value and type of the user input was: <_extension location="test/inputs" /></p>
+    <p>The name of the file uploaded was: <_extension location="test/uploads" /></p>
         
     <p>This paragraph should be the last item in body.</p>
             

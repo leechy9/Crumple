@@ -1,11 +1,12 @@
-# This is an example of an extension that prints out the WSGI environ object.
-
+# This is a simple example that outputs a "Hello World" paragraph.
 import xml.etree.ElementTree as ET
 
-import framework.wsgi
+def hello(envi, insert=[]):
+    p = ET.Element("p")
+    p.text = "Hello World"
+    return p
 
-
-def get_output(envi, insert):
+def print_environ(envi, insert):
     html = ET.Element('html')
     head = ET.SubElement(html, 'head')
     body = ET.SubElement(html, 'body')
