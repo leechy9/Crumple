@@ -9,7 +9,7 @@
         padding: 0;
       }
       html {
-        background-color: #c8c8c8;
+        background-color: #f0f0f0;
         color: #3c3c3c;
         font-family: "Helvetica", "arial", "freesans", "clean", "sans-serif";
         font-size: 1rem;
@@ -170,8 +170,10 @@
       <h3 id="configureApache">Configuring Apache</h3>
       <p>This document assumes that the intended document root for the web server is set to <code>/srv/http/static</code>.</p>
       <p class="highlight">Please note that the settings listed in this section should be understood before using them. While there are no direct security issues with the configurations given, it is always best to tune settings to suit each system's needs.</p>
-      <p>The document root is where all static HTML, CSS, images, Javascript, etc. are usually served from on a web server. To set the document root for Apache, change the appropriate line in <code>httpd.conf</code> to <code>DocumentRoot /srv/http/static</code>. Also add/modify the next lines to ensure that Apache can read the directory in the previous step.</p>
+      <p>The document root is where all static HTML, CSS, images, Javascript, etc. are usually served from on a web server. To set the document root and the appropriate permissions for Apache, change the appropriate lines in <code>httpd.conf</code> to the following:</p>
       <pre><code>
+        DocumentRoot /srv/http/static
+
         &lt;Directory &quot;/srv/http/static&quot;&gt;
           Options Indexes FollowSymLinks
           AllowOverride None
@@ -194,16 +196,16 @@
       <p>The first line tells Apache to forward all URLs that start with <code>/wsgi</code> to the script <code>crumple.py</code> when a web page is requested. For example, if a request to the website <code>http://www.example.com/wsgi/test/full_test</code> was made, Apache would actually execute <code>crumple.py</code> and pass it <code>/test/full_test</code> as a URL.</p>
       <p>The second line tells Python what directory the scripts are to be executed from; this will be covered more in the next section.</p>
       <p>Apache should be set as the owner of the directories created or else it will not be able to read from them. To set Apache as the owner run the command <code>chown -R apache /srv/http/</code>. Note that Apache may have a different username from the one specified, due to the differences between various operating systems.</p>
-      <p>If the system is not running SELinux, then start the Apache daemon and direct your browser to <code>http://127.0.0.1/wsgi/test/full_test</code> to view the test page. If the page displayed correctly, then Crumple is configured properly. For information on the correct SELinux configuration, view the end of this chapter.</p>
+      <p>If the system is not running SELinux, then start the Apache daemon and direct your browser to <code>http://127.0.0.1/wsgi/test/full_test</code> to view the test page. If the page displayed, then Crumple is configured properly. For information on the correct SELinux configuration, view the end of this chapter.</p>
       
       <!--=========Overview=========-->
       <h3 id="overview">Crumple Overview</h3>
       <p>Inside of the <code>crumple/</code> directory, there are several folders and files. This section will attempt to clarify what each directory is used for and does.</p>
-      <p class="separate"><code>framework/</code> is reserved for Crumple files. No files should ever be changed in this directory with the exception of <code>config.py</code>, which may be edited by the user in a simple text editor. This file should not have to be configured, but can be if the user wishes.</p>
-      <p class="separate"><code>libraries/</code> should contain all of the user's personal libraries that one might wish to drop in and use. To import and use the libraries in your web application, a simple call to <code>import desired.package.name</code> will be all that is required.</p>
-      <p class="separate"><code>pages/</code> is where all web pages will be served from. Each module in this directory will be a portion of the URL. For example, the function <code>full_test</code> located in the module <code>pages/test.py</code> will be called when the page <code>http://127.0.0.1/wsgi/test/full_test</code> is accessed. The <code>__init__.py</code> file is necessary, and will need to be modified if additional pages are wanted. Add the module name to the <code>__all__</code> list if the new module is to be activated.</p>
-      <p class="separate"><code>extensions/</code> is used to store all extensions that the user will create. Just like in <code>pages/</code>, the an <code>__init__.py</code> file should be edited each time a new modules is added in order to activate it.</p>
-      <p class="separate"><code>templates/</code> will contain all of the user-created templates. Sub-directories are allowed.</p>
+      <p class="separate"><b><code>framework/</code></b> is reserved for Crumple files. No files should ever be changed in this directory with the exception of <code>config.py</code>, which may be edited by the user in a simple text editor. This file should not have to be configured, but can be if the user wishes.</p>
+      <p class="separate"><b><code>libraries/</code></b> should contain all of the user's personal libraries that one might wish to drop in and use. To import and use the libraries in your web application, a simple call to <code>import desired.package.name</code> will be all that is required.</p>
+      <p class="separate"><b><code>pages/</code></b> is where all web pages will be served from. Each module in this directory will be a portion of the URL. For example, the function <code>full_test</code> located in the module <code>pages/test.py</code> will be called when the page <code>http://127.0.0.1/wsgi/test/full_test</code> is accessed. The <code>__init__.py</code> file is necessary, and will need to be modified if additional pages are wanted. Add the module name to the <code>__all__</code> list if the new module is to be activated.</p>
+      <p class="separate"><b><code>extensions/</code></b> is used to store all extensions that the user will create. Just like in <code>pages/</code>, the an <code>__init__.py</code> file should be edited each time a new modules is added in order to activate it.</p>
+      <p class="separate"><b><code>templates/</code></b> will contain all of the user-created templates. Sub-directories are allowed.</p>
       <p class="highlight">Note that user-defined directories may be created, but for most simple applications, only these directories will be needed.</p>
 
       <!--=========SELinux Policies=========-->
@@ -307,11 +309,11 @@
           &lt;/body&gt;
         &lt;/html&gt;
       </code></pre>
-      <p>While, self closing <code>&lt;_insert /&gt;</code> tags is optional, all data on the inside of the tag will be deleted.</p>
+      <p>While, self closing <code>&lt;_insert /&gt;</code> tags are optional, all data on the inside of the tag will be deleted.</p>
 
       <!--=========Extension Tag=========-->
       <h3 id="extensionTag">Extension Tags</h3>
-      <p>The <code>&lt;_extension /&gt;</code> tag is meant to be used for dynamic or computed content. There is no inline code inside of templates in Crumple, so use of the <code>&lt;_extension /&gt;</code> tag is required. This helps to separate Python code from HTML.</p>
+      <p>The <code>&lt;_extension /&gt;</code> tag is meant to be used for dynamic or computed content. There is no inline code inside of templates in Crumple, so use of the <code>&lt;_extension /&gt;</code> tag is required; this helps to separate Python code from HTML.</p>
       <p>Using an extension is almost the same as using a template, but the location points to a function inside of a module. The file extensions (<code>.py</code>) are left off.</p>
       <p>An example of calling an extension from inside a template:</p>
       <pre><code>
@@ -321,7 +323,7 @@
           &lt;/head&gt;
           &lt;body&gt;
             <span class="highlight">
-            &lt;_extension location=&quot;examples.extension1&quot;&gt;
+            &lt;_extension location=&quot;examples/extension1&quot;&gt;
               &lt;p&gt;Hello World!&lt;/p&gt;
               &lt;p&gt;Goodbye World!&lt;/p&gt;
             &lt;/_extension&gt;
@@ -329,7 +331,7 @@
           &lt;/body&gt;
         &lt;/html&gt;
       </code></pre>
-      <p>Crumple would automatically import the <code>examples.py</code> file from the <code>extensions/</code> directory and execute the <code>extension1</code> function. All of the children inside of the <code>&lt;_extension /&gt;</code> will be passed in as parameters to the function.</p>
+      <p>Crumple would automatically import the <code>examples.py</code> file from the <code>extensions/</code> directory and execute the <code>extension1</code> function. All of the children inside of the <code>&lt;_extension /&gt;</code> tag will be passed in as parameters to the function.</p>
       <p>The next section will cover extensions in greater detail.</p>
     </div>
 
@@ -426,9 +428,8 @@
           import framework.wsgi as wsgi
           
           def my_callable(environ, start_response):
-            extension = &quot;example.ext_test&quot;
             envi = wsgi.Envi(environ, start_response)
-            page = fp.ExtensionPage(extension, envi)
+            page = fp.ExtensionPage(&quot;example/ext_test&quot;, envi)
             return page.get_output()
       </code></pre>
       <p>The above code would execute the callable named <code>ext_test</code> in the <code>extensions/example.py</code> module. The result would be used by an <code>ExtensionPage</code>, which would then return its output to the webserver.</p>
@@ -439,9 +440,8 @@
           import framework.wsgi as wsgi
           
           def my_callable(environ, start_response):
-            template = &quot;tmplExamples/template1.tmpl&quot;
             envi = wsgi.Envi(environ, start_response)
-            page = fp.TemplatePage(template, envi)
+            page = fp.TemplatePage(&quot;tmplExamples/template1.tmpl&quot;, envi)
             return page.get_output()
       </code></pre>
       <p class="highlight">Note that in both of the examples above, the extension and template locations were relative to their respective folders.</p>
@@ -453,6 +453,7 @@
       <p>Static files can also be served through Crumple. The following is an example:</p>
       <pre><code>
         import os.path
+        import framework.config as cfg
         
         def static_page(environ, start_response):
           static_location = os.path.join(cfg.base_location, 'static/blah.txt')
@@ -466,18 +467,17 @@
       <!--=========Envi Objects=========-->
       <h3 id="enviObjects">Envi Objects</h3>
       <p>Envi is used as a way to handle the <code>environ</code> and <code>start_response</code> WSGI objects, as well as retrieve user inputs and cookies. It is also responsible for the HTTP response and HTTP headers that are sent out upon the web page's request.</p>
-      <p>When constructing an Envi, providing the final parameter with a <code>False</code> will tell the Envi object to not use the default headers and status code. If set to <code>True</code> or left unassigned, like in the previous section's example, then the default status code of <code>200 OK</code> is used.</p>
+      <p>When constructing an Envi, providing the final parameter with a <code>False</code> will tell the Envi object to not use the default headers and status code. If set to <code>True</code> or left unassigned, like in the template-page example, then the default status code of <code>200 OK</code> is used.</p>
       <pre><code>
           import framework.page as fp
           import framework.wsgi as wsgi
          
           def application(environ, start_response):
-            extension = &quot;extension1&quot;
             envi = wsgi.Envi(environ, start_response, False)
             envi.status = &quot;200 OK&quot;
             headers = [(&quot;Content-type&quot;, &quot;text/html&quot;)]
             envi.extend_headers(headers)
-            page = fp.ExtensionPage(extension, envi)
+            page = fp.ExtensionPage(&quot;extension1&quot;, envi)
             return page.get_output()
       </code></pre>
       <p class="highlight">Note that only the <code>Content-Length</code> header is still automatically set for the user, while the <code>Content-Type</code> header needs to be set manually.</p>
@@ -497,7 +497,7 @@
         <li><code>application/xhtml+xml</code> for XHTML web pages.</li>
         <li><code>text/html</code> for HTML web pages.</li>
       </ul>
-      <p><span class="highlight">If selecting <code>text/html</code> as the <code>Content-Type</code>, all HTML <code>&lt;script&gt;&lt;/script&gt;</code> tags should contain content to prevent the parser from self-closing them. This avoids an issue where most browsers do not allow self-closing script tags.</span> There are future plans to change this behavior so that script tags do not automatically close themselves when there is no content in them.</p>
+      <p><span class="highlight">If selecting <code>text/html</code> as the <code>Content-Type</code>, all HTML <code>&lt;script&gt;&lt;/script&gt;</code> tags should contain content to prevent the parser from self-closing them. This avoids an issue where most browsers do not execute self-closing script tags.</span> There are future plans to change this behavior so that script tags do not automatically close themselves when there is no content in them.</p>
       <p>Writing <em>both templates and extensions</em> in a way that avoids this issue is simple.</p>
       <p>A fix for a template is to add a single space between the tags:</p>
       <code>&lt;script src=&quot;example.js&quot;&gt; &lt;/script&gt;</code>
